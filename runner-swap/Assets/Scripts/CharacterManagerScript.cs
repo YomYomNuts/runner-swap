@@ -38,6 +38,7 @@ public class CharacterManagerScript : MonoBehaviour {
 	private GameObject bullet;
 	private bool scaleMaxVelocity;
 	private float tempMaxVelocity;
+	public GameObject camera;
 	
 	// Use this for initialization
 	void Start () {
@@ -203,6 +204,7 @@ public class CharacterManagerScript : MonoBehaviour {
 		}
 		
 		this.transform.position = new Vector3(this.transform.position.x + (velocity * Time.deltaTime), this.transform.position.y + jump, this.transform.position.z);
+		camera.transform.position = new Vector3(camera.transform.position.x + (velocity * Time.deltaTime), camera.transform.position.y, camera.transform.position.z);
 	}
 
 	public void ResetMaxVelocity() {
