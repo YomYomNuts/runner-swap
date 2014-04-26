@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CharacterManagerScript : MonoBehaviour {
-
+	
 	private string CONTROLLER_JUMP;
 	private string CONTROLLER_INCREASE_VELOCITY;
 	private string CONTROLLER_DECREASE_VELOCITY;
@@ -103,13 +103,28 @@ public class CharacterManagerScript : MonoBehaviour {
 			Physics.gravity *= -1;
 			this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y * -1, this.transform.position.z);
 			
+			
 			if(gravity == gravityWay.UP)
 			{
 				gravity = gravityWay.DOWN;
+				
+				float boxColliderSize = this.gameObject.GetComponent<BoxCollider>().size.y / 2;
+				
+				this.transform.GetChild(0).transform.position = new Vector3(this.transform.position.x, this.transform.position.y + boxColliderSize, this.transform.position.z);
+				
+				this.transform.GetChild(0).transform.localRotation = Quaternion.Euler(180.0f, -90.0f, 0.0f);
+				
 			}
 			else
 			{
 				gravity = gravityWay.UP;
+				
+				float boxColliderSize = this.gameObject.GetComponent<BoxCollider>().size.y / 2;
+				
+				this.transform.GetChild(0).transform.position = new Vector3(this.transform.position.x, this.transform.position.y - boxColliderSize, this.transform.position.z);
+				
+				this.transform.GetChild(0).transform.localRotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+				
 			}
 			
 			if(isJumping && !isGoingUp)
@@ -146,7 +161,7 @@ public class CharacterManagerScript : MonoBehaviour {
 					jump = Mathf.Abs(jump);
 					jump += valueOfJmp;
 					valueOfJmp -= decreaseJump;
-					Debug.Log("up pos: "+ (this.transform.position.y + jump) + "  /  heigh: " + maxHeighJump/2);
+					
 					if(this.transform.position.y + jump >= maxHeighJump/2)
 					{
 						isGoingUp = false;
@@ -158,7 +173,7 @@ public class CharacterManagerScript : MonoBehaviour {
 					jump = Mathf.Abs (jump) * -1;
 					jump -= valueOfJmp;
 					valueOfJmp += decreaseJump;
-					Debug.Log("do pos: "+ (this.transform.position.y - jump) + "  /  heigh: " + (-1) * maxHeighJump/2);
+					
 					if(this.transform.position.y + jump <= (-1) * maxHeighJump/2)
 					{
 						isGoingUp = false;
