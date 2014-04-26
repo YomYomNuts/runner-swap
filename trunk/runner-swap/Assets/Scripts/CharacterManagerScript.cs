@@ -13,8 +13,10 @@ public class CharacterManagerScript : MonoBehaviour {
 	private float leftTriggerIdle;
 	
 	// MOVE
-	public float minVelocity;
-	public float maxVelocity;
+	public float defaultMinVelocity;
+	public float defaultMaxVelocity;
+	private float minVelocity;
+	private float maxVelocity;
 	public float acceleration;
 	private float velocity;
 	
@@ -34,6 +36,8 @@ public class CharacterManagerScript : MonoBehaviour {
 	private gravityWay gravity;
 
 	private GameObject bullet;
+	private bool scaleMaxVelocity;
+	private float tempMaxVelocity;
 	
 	// Use this for initialization
 	void Start () {
@@ -44,8 +48,11 @@ public class CharacterManagerScript : MonoBehaviour {
 			CONTROLLER_SWAP_GRAVITY = "Runner_OSX_SwapGravity";
 			CONTROLLER_SHOOT = "Runner_OSX_Shoot";
 		#endif
-		
+
+		minVelocity = defaultMinVelocity;
+		maxVelocity = defaultMaxVelocity;
 		velocity = minVelocity;
+
 		isJumping = false;
 		decreaseJump = valueOfJump/maxHeighJump;
 		
@@ -53,11 +60,12 @@ public class CharacterManagerScript : MonoBehaviour {
 		
 		rightTriggerIdle = 0.0f;
 		leftTriggerIdle = 0.0f;
+
+		scaleMaxVelocity = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
 		// INCREASE SPEED
 		if((Input.GetAxis(CONTROLLER_INCREASE_VELOCITY) != rightTriggerIdle) || (Input.GetKeyDown(KeyCode.D)))
 		{
@@ -66,13 +74,16 @@ public class CharacterManagerScript : MonoBehaviour {
 			float increase = Input.GetAxis(CONTROLLER_INCREASE_VELOCITY);
 			
 			if(Input.GetKeyDown(KeyCode.D))
+			{
+				rightTriggerIdle = 0.0f;
 				increase = 0.7f;
+			}
 				
 			if(increase < 0)
 				increase *= -1;
 			
 			velocity += increase * acceleration;
-			
+
 			if(velocity > maxVelocity)
 				velocity = maxVelocity;
 		}
@@ -84,14 +95,16 @@ public class CharacterManagerScript : MonoBehaviour {
 			
 			float decrease = Input.GetAxis(CONTROLLER_DECREASE_VELOCITY);
 			
-			if(Input.GetKeyDown(KeyCode.Q))
+			if(Input.GetKeyDown(KeyCode.Q)) {
+				leftTriggerIdle = 0.0f;
 				decrease = 0.7f;
+			}
 				
 			if(decrease < 0)
 				decrease *= -1;
 				
 			velocity -= decrease * acceleration;
-			
+
 			if(velocity < minVelocity)
 				velocity = minVelocity;
 			
@@ -113,7 +126,6 @@ public class CharacterManagerScript : MonoBehaviour {
 				this.transform.GetChild(0).transform.position = new Vector3(this.transform.position.x, this.transform.position.y + boxColliderSize, this.transform.position.z);
 				
 				this.transform.GetChild(0).transform.localRotation = Quaternion.Euler(180.0f, -90.0f, 0.0f);
-				
 			}
 			else
 			{
@@ -124,12 +136,10 @@ public class CharacterManagerScript : MonoBehaviour {
 				this.transform.GetChild(0).transform.position = new Vector3(this.transform.position.x, this.transform.position.y - boxColliderSize, this.transform.position.z);
 				
 				this.transform.GetChild(0).transform.localRotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
-				
 			}
 			
 			if(isJumping && !isGoingUp)
 				this.GetComponent<Rigidbody>().rigidbody.velocity = new Vector3(this.GetComponent<Rigidbody>().rigidbody.velocity.x, this.GetComponent<Rigidbody>().rigidbody.velocity.y * (-1), this.GetComponent<Rigidbody>().rigidbody.velocity.z);
-				
 		}
 		
 		// JUMP
@@ -180,15 +190,35 @@ public class CharacterManagerScript : MonoBehaviour {
 						jump = 0.0f;
 					}
 				}
+			}				
+		}
+
+		if (scaleMaxVelocity) {			
+			if(velocity > maxVelocity) {			
+				velocity -= 15 * Time.deltaTime;
+			} else {
+				scaleMaxVelocity = false;
+				velocity = maxVelocity;
 			}
-				
 		}
 		
 		this.transform.position = new Vector3(this.transform.position.x + (velocity * Time.deltaTime), this.transform.position.y + jump, this.transform.position.z);
-	
+	}
+
+	public void ResetMaxVelocity() {
+		scaleMaxVelocity = false;
+		maxVelocity = defaultMaxVelocity;
+	}
+
+	public void ChangeMaxVelocity(float value) {
+		if (value > defaultMinVelocity) {
+			scaleMaxVelocity = true;		
+			maxVelocity = value;	
+		}
 	}
 
 	public void ChangeVelocity(float value) {
+		Debug.Log ("Change velocity");
 		velocity += value;
 		if(velocity < minVelocity)
 			velocity = minVelocity;

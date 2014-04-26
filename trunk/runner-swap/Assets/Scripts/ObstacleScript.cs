@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ObstacleScript : MonoBehaviour {
 
-	public enum Type {WALL, WEAKED_WALL, SLOW_WALL, POISON}
+	public enum Type {WALL, WEAKED_WALL, SLOW_WALL}
 	public Type type;
 	public float slowRate;
 	
@@ -19,7 +19,7 @@ public class ObstacleScript : MonoBehaviour {
 		
 	}
 
-	void OnCollisionEnter(Collision collision) {		
+	void OnCollisionEnter(Collision collision) {	
 		collisionTag = collision.gameObject.tag;
 		switch (type) {
 			case Type.WALL:
@@ -28,12 +28,23 @@ public class ObstacleScript : MonoBehaviour {
 			case Type.WEAKED_WALL:
 				WeakedWallCollision(collision);
 				break;
-			case Type.POISON:
-				PoisonCollision(collision);
-				break;
-			case Type.SLOW_WALL:
-				SlowWallCollision(collision);
-				break;
+		}
+	}
+
+	void OnTriggerEnter(Collider collider) {	
+		if (type == Type.SLOW_WALL) {
+			collisionTag = collider.gameObject.tag;
+			if(collisionTag == "Hero") {		
+				SlowWallTrigger(collider);
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider collider) {
+		if (type == Type.SLOW_WALL) {
+			if(collider.gameObject.tag == "Hero") {			
+				collider.gameObject.GetComponent<CharacterManagerScript>().ResetMaxVelocity();
+			}
 		}
 	}
 
@@ -43,9 +54,9 @@ public class ObstacleScript : MonoBehaviour {
 		}
 	}
 
-	void SlowWallCollision(Collision collision) {
+	void SlowWallTrigger(Collider collider) {
 		if (collisionTag == "Hero") {
-
+			collider.gameObject.GetComponent<CharacterManagerScript>().ChangeMaxVelocity(slowRate);
 		}
 	}
 
@@ -58,12 +69,6 @@ public class ObstacleScript : MonoBehaviour {
 		else if (collisionTag == "Bullet") {
 			DestroyObject (collision.gameObject);			
 			DestroyObject (this.gameObject);
-		}
-	}
-
-	void PoisonCollision(Collision collision) {
-		if (collisionTag == "Hero") {
-			DestroyObject(collision.gameObject);
 		}
 	}
 }
