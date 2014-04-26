@@ -55,12 +55,15 @@ public class CharacterManagerScript : MonoBehaviour {
 	void Update () {
 		
 		// INCREASE SPEED
-		if(Input.GetAxis(CONTROLLER_INCREASE_VELOCITY) != rightTriggerIdle)
+		if((Input.GetAxis(CONTROLLER_INCREASE_VELOCITY) != rightTriggerIdle) || (Input.GetKeyDown(KeyCode.RightArrow)))
 		{
 			rightTriggerIdle = -0.1f;
 			
 			float increase = Input.GetAxis(CONTROLLER_INCREASE_VELOCITY);
 			
+			if(Input.GetKeyDown(KeyCode.RightArrow))
+				increase = 0.7f;
+				
 			if(increase < 0)
 				increase *= -1;
 			
@@ -71,12 +74,15 @@ public class CharacterManagerScript : MonoBehaviour {
 		}
 		
 		// DECREASE SPEED
-		if(Input.GetAxis(CONTROLLER_DECREASE_VELOCITY) != leftTriggerIdle)
+		if((Input.GetAxis(CONTROLLER_DECREASE_VELOCITY) != leftTriggerIdle) || (Input.GetKeyDown(KeyCode.RightArrow)))
 		{
 			leftTriggerIdle = -0.1f;
 			
 			float decrease = Input.GetAxis(CONTROLLER_DECREASE_VELOCITY);
 			
+			if(Input.GetKeyDown(KeyCode.LeftArrow))
+				decrease = 0.7f;
+				
 			if(decrease < 0)
 				decrease *= -1;
 				
