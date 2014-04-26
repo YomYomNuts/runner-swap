@@ -5,6 +5,7 @@ public class ObstacleScript : MonoBehaviour {
 
 	public enum Type {WALL, WEAKED_WALL, SPIDER_NET, POISON}
 	public Type type;
+	public int slowRate;
 	
 	private string collisionTag;
 
@@ -42,12 +43,13 @@ public class ObstacleScript : MonoBehaviour {
 	void WeakedWallCollision(Collision collision) {
 		if (collisionTag == "Hero") {
 			//slow down hero
+			collision.gameObject.GetComponent<CharacterManagerScript>().ChangeVelocity(-slowRate);
+			DestroyObject (this.gameObject);
 		}
 		else if (collisionTag == "Bullet") {
-			DestroyObject (collision.gameObject);
+			DestroyObject (collision.gameObject);			
+			DestroyObject (this.gameObject);
 		}
-
-		DestroyObject (this.gameObject);
 	}
 
 	void PoisonCollision(Collision collision) {

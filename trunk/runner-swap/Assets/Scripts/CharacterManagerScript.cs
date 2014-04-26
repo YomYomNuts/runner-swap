@@ -131,14 +131,11 @@ public class CharacterManagerScript : MonoBehaviour {
 		}
 
 		if (Input.GetButtonDown (buttonName: CONTROLLER_SHOOT)) {
-			Debug.Log("Shot");
 			Vector3 popPosition = this.rigidbody.position;
 			popPosition.x += 1f;
 			bullet = (GameObject)Instantiate(Resources.Load("Bullet"));
 			bullet.rigidbody.position = popPosition;
 		}
-
-
 		
 		if(isJumping)
 		{
@@ -162,7 +159,7 @@ public class CharacterManagerScript : MonoBehaviour {
 					jump -= valueOfJmp;
 					valueOfJmp += decreaseJump;
 					Debug.Log("do pos: "+ (this.transform.position.y - jump) + "  /  heigh: " + (-1) * maxHeighJump/2);
-					if(this.transform.position.y - jump <= (-1) * maxHeighJump/2)
+					if(this.transform.position.y + jump <= (-1) * maxHeighJump/2)
 					{
 						isGoingUp = false;
 						jump = 0.0f;
@@ -174,6 +171,12 @@ public class CharacterManagerScript : MonoBehaviour {
 		
 		this.transform.position = new Vector3(this.transform.position.x + (velocity * Time.deltaTime), this.transform.position.y + jump, this.transform.position.z);
 	
+	}
+
+	public void ChangeVelocity(float value) {
+		velocity += value;
+		if(velocity < minVelocity)
+			velocity = minVelocity;
 	}
 	
 	void OnCollisionEnter(Collision collision)
