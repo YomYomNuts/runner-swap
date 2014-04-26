@@ -7,6 +7,7 @@ public class CharacterManagerScript : MonoBehaviour {
 	private string CONTROLLER_INCREASE_VELOCITY;
 	private string CONTROLLER_DECREASE_VELOCITY;
 	private string CONTROLLER_SWAP_GRAVITY;
+	private string CONTROLLER_SHOOT;
 	
 	private float rightTriggerIdle;
 	private float leftTriggerIdle;
@@ -31,6 +32,8 @@ public class CharacterManagerScript : MonoBehaviour {
 	// GRAVITY
 	private enum gravityWay{UP, DOWN};
 	private gravityWay gravity;
+
+	private GameObject bullet;
 	
 	// Use this for initialization
 	void Start () {
@@ -39,6 +42,7 @@ public class CharacterManagerScript : MonoBehaviour {
 			CONTROLLER_INCREASE_VELOCITY = "Runner_OSX_IncreaseVelocity";
 			CONTROLLER_DECREASE_VELOCITY = "Runner_OSX_DecreaseVelocity";
 			CONTROLLER_SWAP_GRAVITY = "Runner_OSX_SwapGravity";
+			CONTROLLER_SHOOT = "Runner_OSX_Shoot";
 		#endif
 		
 		velocity = minVelocity;
@@ -55,13 +59,13 @@ public class CharacterManagerScript : MonoBehaviour {
 	void Update () {
 		
 		// INCREASE SPEED
-		if((Input.GetAxis(CONTROLLER_INCREASE_VELOCITY) != rightTriggerIdle) || (Input.GetKeyDown(KeyCode.RightArrow)))
+		if((Input.GetAxis(CONTROLLER_INCREASE_VELOCITY) != rightTriggerIdle) || (Input.GetKeyDown(KeyCode.D)))
 		{
 			rightTriggerIdle = -0.1f;
 			
 			float increase = Input.GetAxis(CONTROLLER_INCREASE_VELOCITY);
 			
-			if(Input.GetKeyDown(KeyCode.RightArrow))
+			if(Input.GetKeyDown(KeyCode.D))
 				increase = 0.7f;
 				
 			if(increase < 0)
@@ -74,13 +78,13 @@ public class CharacterManagerScript : MonoBehaviour {
 		}
 		
 		// DECREASE SPEED
-		if((Input.GetAxis(CONTROLLER_DECREASE_VELOCITY) != leftTriggerIdle) || (Input.GetKeyDown(KeyCode.RightArrow)))
+		if((Input.GetAxis(CONTROLLER_DECREASE_VELOCITY) != leftTriggerIdle) || (Input.GetKeyDown(KeyCode.Q)))
 		{
 			leftTriggerIdle = -0.1f;
 			
 			float decrease = Input.GetAxis(CONTROLLER_DECREASE_VELOCITY);
 			
-			if(Input.GetKeyDown(KeyCode.LeftArrow))
+			if(Input.GetKeyDown(KeyCode.Q))
 				decrease = 0.7f;
 				
 			if(decrease < 0)
@@ -125,6 +129,16 @@ public class CharacterManagerScript : MonoBehaviour {
 				valueOfJmp = valueOfJump;
 			}
 		}
+
+		if (Input.GetButtonDown (buttonName: CONTROLLER_SHOOT)) {
+			Debug.Log("Shot");
+			Vector3 popPosition = this.rigidbody.position;
+			popPosition.x += 1f;
+			bullet = (GameObject)Instantiate(Resources.Load("Bullet"));
+			bullet.rigidbody.position = popPosition;
+		}
+
+
 		
 		if(isJumping)
 		{
