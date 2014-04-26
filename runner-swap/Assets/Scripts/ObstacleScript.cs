@@ -3,9 +3,9 @@ using System.Collections;
 
 public class ObstacleScript : MonoBehaviour {
 
-	public enum Type {WALL, WEAKED_WALL, SPIDER_NET, POISON}
+	public enum Type {WALL, WEAKED_WALL, SLOW_WALL, POISON}
 	public Type type;
-	public int slowRate;
+	public float slowRate;
 	
 	private string collisionTag;
 
@@ -31,12 +31,21 @@ public class ObstacleScript : MonoBehaviour {
 			case Type.POISON:
 				PoisonCollision(collision);
 				break;
+			case Type.SLOW_WALL:
+				SlowWallCollision(collision);
+				break;
 		}
 	}
 
 	void WallCollision(Collision collision) {
 		if (collisionTag == "Hero" || collisionTag == "Bullet") {
 			DestroyObject(collision.gameObject);
+		}
+	}
+
+	void SlowWallCollision(Collision collision) {
+		if (collisionTag == "Hero") {
+
 		}
 	}
 
