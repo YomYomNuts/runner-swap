@@ -111,7 +111,6 @@ public class CharacterManagerScript : MonoBehaviour {
 	{
 		if(collision.gameObject.tag == "Ground")
 		{
-			
 			isJumping = false;
 		}
 	}
